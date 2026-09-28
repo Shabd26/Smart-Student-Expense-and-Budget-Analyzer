@@ -1,0 +1,9 @@
+{
+    "monthly_budget": 15000,
+    "category_budgets": {
+        "Food": 3000,
+        "Transport": 2000,
+        "Study": 3000,
+        "Entertainment": 2000
+    }
+}
