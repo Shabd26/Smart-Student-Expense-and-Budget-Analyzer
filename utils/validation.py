@@ -1,12 +1,12 @@
 def check_amount(amount):
     if amount <= 0:
-        raise ValueError("Amount must be greater than 0.")
-
-    return amount
+        print("Amount must be greater than 0.")
+        return False
+    return True
 
 
 def check_category(category):
     if category == "":
-        raise ValueError("Category cannot be empty.")
-
-    return category
+        print("Category cannot be empty.")
+        return False
+    return True

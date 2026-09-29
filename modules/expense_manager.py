@@ -11,10 +11,13 @@ def get_expenses():
 
 
 def add_expense(amount, category, description, date):
-    expenses = get_expenses()
+    if check_amount(amount) == False:
+        return None
 
-    check_amount(amount)
-    check_category(category)
+    if check_category(category) == False:
+        return None
+
+    expenses = get_expenses()
 
     if len(expenses) == 0:
         new_id = 1
@@ -66,13 +69,13 @@ def filter_expenses(category):
     return result
 
 
-def edit_expense(
-    expense_id,
-    amount,
-    category,
-    description,
-    date
-):
+def edit_expense(expense_id, amount, category, description, date):
+    if check_amount(amount) == False:
+        return False
+
+    if check_category(category) == False:
+        return False
+
     expenses = get_expenses()
 
     for expense in expenses:

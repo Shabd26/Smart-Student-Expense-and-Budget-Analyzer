@@ -2,45 +2,56 @@ import unittest
 import tempfile
 import os
 
+from modules import expense_manager
+
 
 class ExpenseTests(unittest.TestCase):
 
-    def test_add_search_filter_edit_delete(self):
-        import json
+    def setUp(self):
+        self.folder = tempfile.mkdtemp()
+        self.file = os.path.join(self.folder, "expenses.json")
+        self.old_file = expense_manager.EXPENSES_FILE
+        expense_manager.EXPENSES_FILE = self.file
 
-        folder = tempfile.mkdtemp()
-        filename = os.path.join(folder, "expenses.json")
+    def tearDown(self):
+        expense_manager.EXPENSES_FILE = self.old_file
 
-        expenses = []
+    def test_add_expense(self):
+        result = expense_manager.add_expense(100, "Food", "Lunch", "2026-09-20")
+        self.assertEqual(result["amount"], 100)
+        self.assertEqual(result["category"], "Food")
 
-        expense = {
-            "id": 1,
-            "amount": 100,
-            "category": "Food",
-            "description": "Lunch",
-            "date": "2026-09-01"
-        }
+    def test_view_expenses(self):
+        expense_manager.add_expense(100, "Food", "Lunch", "2026-09-20")
+        expenses = expense_manager.view_expenses()
+        self.assertEqual(len(expenses), 1)
 
-        expenses.append(expense)
+    def test_search_expenses(self):
+        expense_manager.add_expense(100, "Food", "Lunch", "2026-09-20")
+        expense_manager.add_expense(200, "Study", "Notebook", "2026-09-21")
+        result = expense_manager.search_expenses("Lunch")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["category"], "Food")
 
-        file = open(filename, "w")
-        json.dump(expenses, file)
-        file.close()
+    def test_filter_expenses(self):
+        expense_manager.add_expense(100, "Food", "Lunch", "2026-09-20")
+        expense_manager.add_expense(200, "Study", "Notebook", "2026-09-21")
+        result = expense_manager.filter_expenses("Study")
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["amount"], 200)
 
-        file = open(filename, "r")
-        data = json.load(file)
-        file.close()
+    def test_edit_and_delete_expense(self):
+        expense_manager.add_expense(100, "Food", "Lunch", "2026-09-20")
+        result = expense_manager.edit_expense(1, 150, "Food", "Dinner", "2026-09-22")
+        self.assertTrue(result)
 
-        self.assertEqual(len(data), 1)
-        self.assertEqual(data[0]["amount"], 100)
+        expenses = expense_manager.view_expenses()
+        self.assertEqual(expenses[0]["amount"], 150)
+        self.assertEqual(expenses[0]["description"], "Dinner")
 
-        data[0]["amount"] = 150
-
-        self.assertEqual(data[0]["amount"], 150)
-
-        data.pop(0)
-
-        self.assertEqual(len(data), 0)
+        result = expense_manager.delete_expense(1)
+        self.assertTrue(result)
+        self.assertEqual(len(expense_manager.view_expenses()), 0)
 
 
 if __name__ == "__main__":

@@ -63,8 +63,10 @@ def expense_menu():
             description = input("Enter description: ")
             date = input("Enter date (YYYY-MM-DD): ")
 
-            add_expense(amount, category, description, date)
-            print("Expense added.")
+            result = add_expense(amount, category, description, date)
+
+            if result != None:
+                print("Expense added.")
 
         elif choice == "2":
             expenses = view_expenses()
@@ -97,8 +99,6 @@ def expense_menu():
 
             if result == True:
                 print("Expense updated.")
-            else:
-                print("Expense not found.")
 
         elif choice == "6":
             expense_id = int(input("Enter expense ID: "))
