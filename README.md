@@ -106,6 +106,7 @@ Smart_Student_Expense_Budget_Analyzer/
     ├── test_income.py
     ├── test_report.py
     └── __init__.py
+```
 
 ## 5. Requirements
 
